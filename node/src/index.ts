@@ -77,12 +77,16 @@ export interface MocksmsContainer {
 
 /** Start mocksms in a container (in-memory store) and wait until healthy. */
 export async function startMocksms(opts: StartMocksmsOptions = {}): Promise<MocksmsContainer> {
-  const container: StartedTestContainer = await new GenericContainer(
-    opts.image ?? "ghcr.io/aeomar999/commpit/mocksms:latest"
-  )
+  // MOCKSMS_IMAGE overrides the image (CI matrix, local builds).
+  const image = opts.image ?? process.env.MOCKSMS_IMAGE ?? "ghcr.io/aeomar999/commpit/mocksms:latest";
+  const container: StartedTestContainer = await new GenericContainer(image)
     .withEnvironment({
       MOCKSMS_MEMORY: "true",
       MOCKSMS_OTP_CODE: opts.otpCode ?? "123456",
+      // Inside the container the server must bind all interfaces;
+      // published ports forward to the container IP, not its loopback.
+      MOCKSMS_HTTP_HOST: "0.0.0.0",
+      MOCKSMS_SMTP_HOST: "0.0.0.0",
     })
     .withExposedPorts(4010, 1025)
     .withWaitStrategy(Wait.forHttp("/api/v1/healthz", 4010))

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import time
 import urllib.parse
 import urllib.request
@@ -30,11 +31,14 @@ def _get(url: str, params: Optional[dict[str, str]] = None) -> tuple[int, Any]:
 class MocksmsContainer:
     """A running mocksms sandbox (in-memory store)."""
 
-    def __init__(self, image: str = DEFAULT_IMAGE, otp_code: str = "123456") -> None:
+    def __init__(self, image: str = "", otp_code: str = "123456") -> None:
+        # MOCKSMS_IMAGE overrides the image (CI matrix, local builds).
         self._container = (
-            DockerContainer(image)
+            DockerContainer(image or os.environ.get("MOCKSMS_IMAGE", DEFAULT_IMAGE))
             .with_env("MOCKSMS_MEMORY", "true")
             .with_env("MOCKSMS_OTP_CODE", otp_code)
+            .with_env("MOCKSMS_HTTP_HOST", "0.0.0.0")
+            .with_env("MOCKSMS_SMTP_HOST", "0.0.0.0")
             .with_exposed_ports(4010, 1025)
         )
 

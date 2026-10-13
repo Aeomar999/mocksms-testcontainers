@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/testcontainers/testcontainers-go"
@@ -37,6 +38,10 @@ type Container struct {
 func Start(ctx context.Context, opts Options) (*Container, error) {
 	image := opts.Image
 	if image == "" {
+		// MOCKSMS_IMAGE overrides the image (CI matrix, local builds).
+		image = os.Getenv("MOCKSMS_IMAGE")
+	}
+	if image == "" {
 		image = DefaultImage
 	}
 	otpCode := opts.OTPCode
@@ -47,8 +52,10 @@ func Start(ctx context.Context, opts Options) (*Container, error) {
 		Image:        image,
 		ExposedPorts: []string{"4010/tcp", "1025/tcp"},
 		Env: map[string]string{
-			"MOCKSMS_MEMORY":   "true",
-			"MOCKSMS_OTP_CODE": otpCode,
+			"MOCKSMS_MEMORY":    "true",
+			"MOCKSMS_OTP_CODE":  otpCode,
+			"MOCKSMS_HTTP_HOST": "0.0.0.0",
+			"MOCKSMS_SMTP_HOST": "0.0.0.0",
 		},
 		WaitingFor: wait.ForHTTP("/api/v1/healthz").WithPort("4010/tcp"),
 	}

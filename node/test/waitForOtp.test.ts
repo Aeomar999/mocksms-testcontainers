@@ -50,18 +50,22 @@ describe("waitForOtp", () => {
 
 // Container lifecycle needs a Docker daemon (CI); skipped elsewhere.
 describe.skipIf(!process.env.MOCKSMS_TEST_DOCKER)("container", () => {
-  it("starts and round-trips an OTP", async () => {
-    const { startMocksms } = await import("../src/index.js");
-    const mocksms = await startMocksms({});
-    try {
-      await mocksms.sendSms({
-        from: "+15555550100",
-        to: "+15005550006",
-        body: "Your verification code is 731946",
-      });
-      await expect(mocksms.waitForOtp("+15005550006")).resolves.toBe("731946");
-    } finally {
-      await mocksms.stop();
-    }
-  });
+  it(
+    "starts and round-trips an OTP",
+    async () => {
+      const { startMocksms } = await import("../src/index.js");
+      const mocksms = await startMocksms({});
+      try {
+        await mocksms.sendSms({
+          from: "+15555550100",
+          to: "+15005550006",
+          body: "Your verification code is 731946",
+        });
+        await expect(mocksms.waitForOtp("+15005550006")).resolves.toBe("731946");
+      } finally {
+        await mocksms.stop();
+      }
+    },
+    120_000
+  );
 });

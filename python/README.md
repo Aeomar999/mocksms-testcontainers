@@ -13,4 +13,5 @@ with MocksmsContainer() as mocksms:  # in-memory store, OTP 123456
 ```
 
 `MocksmsContainer(image=..., otp_code=...)` override the image and fixed
-code. `base_url` is available for raw API calls.
+code (`MOCKSMS_IMAGE` env also works). `base_url` is available for raw API
+calls.

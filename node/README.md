@@ -17,4 +17,5 @@ try {
 ```
 
 `startMocksms({ image, otpCode, timeoutMs })`. Standalone `waitForOtp(baseUrl,
-to, opts?)` is exported for existing servers.
+to, opts?)` is exported for existing servers. `MOCKSMS_IMAGE` env overrides
+the image (CI matrix, local builds).

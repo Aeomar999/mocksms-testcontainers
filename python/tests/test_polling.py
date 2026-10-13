@@ -61,3 +61,15 @@ def test_wait_for_otp_timeout():
     with StubServer(None) as container:
         with pytest.raises(TimeoutError, match="timed out"):
             container.wait_for_otp("+19999999999", timeout=1.0, poll_interval=0.1)
+
+
+def test_container_round_trip():
+    import os
+
+    if not os.environ.get("MOCKSMS_TEST_DOCKER"):
+        pytest.skip("needs Docker daemon")
+    from mocksms_testcontainers import MocksmsContainer
+
+    with MocksmsContainer() as container:
+        container.send_sms("+15555550100", "+15005550006", "Your verification code is 731946")
+        assert container.wait_for_otp("+15005550006", timeout=60.0) == "731946"
