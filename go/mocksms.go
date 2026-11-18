@@ -53,7 +53,7 @@ func Start(ctx context.Context, opts Options) (*Container, error) {
 		ExposedPorts: []string{"4010/tcp", "1025/tcp"},
 		Env: map[string]string{
 			"MOCKSMS_MEMORY":    "true",
-			"MOCKSMS_OTP_CODE":  otpCode,
+			"MOCKSMS_OTP__FIXED_CODE": otpCode,
 			"MOCKSMS_HTTP_HOST": "0.0.0.0",
 			"MOCKSMS_SMTP_HOST": "0.0.0.0",
 		},

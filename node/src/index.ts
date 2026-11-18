@@ -82,7 +82,7 @@ export async function startMocksms(opts: StartMocksmsOptions = {}): Promise<Mock
   const container: StartedTestContainer = await new GenericContainer(image)
     .withEnvironment({
       MOCKSMS_MEMORY: "true",
-      MOCKSMS_OTP_CODE: opts.otpCode ?? "123456",
+      MOCKSMS_OTP__FIXED_CODE: opts.otpCode ?? "123456",
       // Inside the container the server must bind all interfaces;
       // published ports forward to the container IP, not its loopback.
       MOCKSMS_HTTP_HOST: "0.0.0.0",
