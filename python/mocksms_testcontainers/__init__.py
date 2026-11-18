@@ -36,7 +36,7 @@ class MocksmsContainer:
         self._container = (
             DockerContainer(image or os.environ.get("MOCKSMS_IMAGE", DEFAULT_IMAGE))
             .with_env("MOCKSMS_MEMORY", "true")
-            .with_env("MOCKSMS_OTP_CODE", otp_code)
+            .with_env("MOCKSMS_OTP__FIXED_CODE", otp_code)
             .with_env("MOCKSMS_HTTP_HOST", "0.0.0.0")
             .with_env("MOCKSMS_SMTP_HOST", "0.0.0.0")
             .with_exposed_ports(4010, 1025)
